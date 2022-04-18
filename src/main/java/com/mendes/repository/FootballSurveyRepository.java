@@ -1,6 +1,6 @@
 package com.mendes.repository;
 
-import com.mendes.model.FootballSurvey;
+import com.mendes.model.entity.FootballSurvey;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

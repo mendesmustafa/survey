@@ -1,6 +1,6 @@
 package com.mendes.repository;
 
-import com.mendes.model.Pollster;
+import com.mendes.model.entity.Pollster;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

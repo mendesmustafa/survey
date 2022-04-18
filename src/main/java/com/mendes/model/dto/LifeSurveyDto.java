@@ -1,51 +1,24 @@
-package com.mendes.model;
+package com.mendes.model.dto;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
- * @author mendes
+ * @author mendesmustafa on 17-04-2022
  */
 
-@Entity
-@Table(name = "LIFESURVEY")
-public class LifeSurvey implements Serializable {
+public class LifeSurveyDto implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "LİFESURVEY_ID_SEQ")
-    @SequenceGenerator(name = "LİFESURVEY_ID_SEQ", allocationSize = 1)
-    @Column(name = "ID")
     private Long id;
-
-    @Column(name = "NAME")
     private String name;
-
-    @Column(name = "SURNAME")
     private String surname;
-
-    @Column(name = "GENDER")
     private int gender;
-
-    @Column(name = "DATE_OF_BIRTH")
     private LocalDate dateOfBirth;
-
-    @Column(name = "HAPPINESS_RATE")
     private int happinessRate;
-
-    @Column(name = "HAPPY_THING")
     private String happyThing;
-
-    @Column(name = "UNHAPPY_THING")
     private String unhappyThing;
-
-    @Column(name = "DESCRIPTION")
     private String description;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "pollster_id")
-    private Pollster pollster;
-
+    private PollsterDto pollster;
 
     public Long getId() {
         return id;
@@ -119,11 +92,11 @@ public class LifeSurvey implements Serializable {
         this.description = description;
     }
 
-    public Pollster getPollster() {
+    public PollsterDto getPollster() {
         return pollster;
     }
 
-    public void setPollster(Pollster pollster) {
+    public void setPollster(PollsterDto pollster) {
         this.pollster = pollster;
     }
 }

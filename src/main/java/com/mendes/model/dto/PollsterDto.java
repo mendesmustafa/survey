@@ -1,26 +1,15 @@
-package com.mendes.model;
+package com.mendes.model.dto;
 
-import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- * @author mendes
+ * @author mendesmustafa on 17-04-2022
  */
 
-@Entity
-@Table(name = "POLLSTER")
-public class Pollster implements Serializable {
+public class PollsterDto implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "POLLSTER_ID_SEQ")
-    @SequenceGenerator(name = "POLLSTER_ID_SEQ", allocationSize = 1)
-    @Column(name = "ID")
     private Long id;
-
-    @Column(name = "NAME")
     private String name;
-
-    @Column(name = "SURNAME")
     private String surname;
 
     public Long getId() {

@@ -1,9 +1,14 @@
 package com.mendes.service;
 
-import com.mendes.model.LifeSurvey;
+import com.mendes.model.dto.LifeSurveyDto;
+import com.mendes.model.dto.PollsterDto;
+import com.mendes.model.entity.LifeSurvey;
+import com.mendes.model.entity.Pollster;
 import com.mendes.repository.LifeSurveyRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,8 +19,8 @@ import java.util.Optional;
 @Service
 public class LifeSurveyService {
 
-    private LifeSurveyRepository lifeSurveyRepository;
-    private PollsterService pollsterService;
+    private final LifeSurveyRepository lifeSurveyRepository;
+    private final PollsterService pollsterService;
 
     public LifeSurveyService(LifeSurveyRepository lifeSurveyRepository, PollsterService pollsterService) {
         this.lifeSurveyRepository = lifeSurveyRepository;
@@ -23,51 +28,94 @@ public class LifeSurveyService {
     }
 
     public LifeSurvey findById(Long id) {
-
         LifeSurvey lifeSurvey = null;
         Optional<LifeSurvey> optionalLifeSurvey = lifeSurveyRepository.findById(id);
         if (optionalLifeSurvey.isPresent()) {
             lifeSurvey = optionalLifeSurvey.get();
         }
-
         return lifeSurvey;
     }
 
-    public LifeSurvey save(LifeSurvey lifeSurveyModel) throws Exception {
-
-        if ((lifeSurveyModel.getGender() == 0 || lifeSurveyModel.getGender() == 1)
-                && (lifeSurveyModel.getHappinessRate() >= 1 && lifeSurveyModel.getHappinessRate() <= 10)) {
-            pollsterService.save(lifeSurveyModel.getPollster());
-            lifeSurveyModel = lifeSurveyRepository.save(lifeSurveyModel);
-        } else {
-            throw new Exception("cinsiyet kız için 0 erkek için 1 olmalıdır ve mutluluk oranı 1 ile 10 arasında olmalı..");
+    public LifeSurveyDto getById(Long id) {
+        LifeSurveyDto lifeSurveyDto = null;
+        LifeSurvey lifeSurvey = findById(id);
+        if (lifeSurvey != null) {
+            lifeSurveyDto = fillLifeSurveyDto(lifeSurvey);
         }
-
-        return lifeSurveyModel;
+        return lifeSurveyDto;
     }
 
-    public List<LifeSurvey> list() {
+    private LifeSurveyDto fillLifeSurveyDto(LifeSurvey lifeSurvey) {
+        LifeSurveyDto lifeSurveyDto = new LifeSurveyDto();
+        lifeSurveyDto.setId(lifeSurvey.getId());
+        lifeSurveyDto.setName(lifeSurvey.getName());
+        lifeSurveyDto.setSurname(lifeSurvey.getSurname());
+        lifeSurveyDto.setGender(lifeSurvey.getGender());
+        lifeSurveyDto.setDateOfBirth(lifeSurvey.getDateOfBirth());
+        lifeSurveyDto.setDescription(lifeSurvey.getDescription());
+        lifeSurveyDto.setHappinessRate(lifeSurvey.getHappinessRate());
+        lifeSurveyDto.setHappyThing(lifeSurvey.getHappyThing());
+        lifeSurveyDto.setUnhappyThing(lifeSurvey.getUnhappyThing());
+        PollsterDto pollsterDto = new PollsterDto();
+        pollsterDto.setId(lifeSurvey.getPollster().getId());
+        pollsterDto.setName(lifeSurvey.getPollster().getName());
+        pollsterDto.setSurname(lifeSurvey.getPollster().getSurname());
+        lifeSurveyDto.setPollster(pollsterDto);
+        return lifeSurveyDto;
+    }
+
+    private LifeSurvey fillLifeSurvey(LifeSurveyDto lifeSurveyDto, LifeSurvey lifeSurvey) {
+        lifeSurvey.setName(lifeSurveyDto.getName());
+        lifeSurvey.setSurname(lifeSurveyDto.getSurname());
+        lifeSurvey.setGender(lifeSurveyDto.getGender());
+        lifeSurvey.setDateOfBirth(lifeSurveyDto.getDateOfBirth());
+        lifeSurvey.setDescription(lifeSurveyDto.getDescription());
+        lifeSurvey.setHappinessRate(lifeSurveyDto.getHappinessRate());
+        lifeSurvey.setHappyThing(lifeSurveyDto.getHappyThing());
+        lifeSurvey.setUnhappyThing(lifeSurveyDto.getUnhappyThing());
+        Pollster pollster = new Pollster();
+        pollster.setName(lifeSurveyDto.getPollster().getName());
+        pollster.setSurname(lifeSurveyDto.getPollster().getSurname());
+        lifeSurvey.setPollster(pollster);
+        return lifeSurvey;
+    }
+
+    @Transactional
+    public LifeSurveyDto save(LifeSurveyDto lifeSurveyDto) {
+        if ((lifeSurveyDto.getGender() == 0 || lifeSurveyDto.getGender() == 1)
+                && (lifeSurveyDto.getHappinessRate() >= 1 && lifeSurveyDto.getHappinessRate() <= 10)) {
+            LifeSurvey lifeSurvey = new LifeSurvey();
+            LifeSurvey returnLifeSurvey = fillLifeSurvey(lifeSurveyDto, lifeSurvey);
+            pollsterService.save(returnLifeSurvey.getPollster());
+            lifeSurveyRepository.save(returnLifeSurvey);
+            lifeSurveyDto.setId(returnLifeSurvey.getId());
+        }
+        return lifeSurveyDto;
+    }
+
+    public List<LifeSurveyDto> list() {
+        List<LifeSurveyDto> lifeSurveyDtos = new ArrayList<>();
         List<LifeSurvey> lifeSurveys = lifeSurveyRepository.findAll();
-        return lifeSurveys;
+        lifeSurveys.forEach(lifeSurvey -> {
+            LifeSurveyDto lifeSurveyDto = fillLifeSurveyDto(lifeSurvey);
+            lifeSurveyDtos.add(lifeSurveyDto);
+        });
+        return lifeSurveyDtos;
     }
 
-    public LifeSurvey update(LifeSurvey lifeSurveyModel) throws Exception {
-
-        LifeSurvey lifeSurvey = findById(lifeSurveyModel.getId());
-
+    @Transactional
+    public LifeSurveyDto update(LifeSurveyDto lifeSurveyDto) {
+        LifeSurvey lifeSurvey = findById(lifeSurveyDto.getId());
         if (lifeSurvey == null) {
-            throw new Exception("İd bulunamadı..");
+            return null;
         }
-
-        if (lifeSurveyModel.getGender() == 0 || lifeSurveyModel.getGender() == 1
-                || lifeSurveyModel.getHappinessRate() >= 1 || lifeSurveyModel.getHappinessRate() <= 10) {
-            pollsterService.save(lifeSurveyModel.getPollster());
-            lifeSurveyRepository.save(lifeSurveyModel);
-        } else {
-            throw new Exception("cinsiyet kız için 0 erkek için 1 olmalıdır ve mutluluk oranı 1 ile 10 arasında olmalı..");
+        if (lifeSurveyDto.getGender() == 0 || lifeSurveyDto.getGender() == 1
+                || lifeSurveyDto.getHappinessRate() >= 1 || lifeSurveyDto.getHappinessRate() <= 10) {
+            LifeSurvey returnLifeSurvey = fillLifeSurvey(lifeSurveyDto, lifeSurvey);
+            pollsterService.save(returnLifeSurvey.getPollster());
+            lifeSurveyRepository.save(returnLifeSurvey);
         }
-
-        return lifeSurveyModel;
+        return lifeSurveyDto;
     }
 
     public void delete(Long id) {

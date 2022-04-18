@@ -1,6 +1,6 @@
 package com.mendes.service;
 
-import com.mendes.model.Pollster;
+import com.mendes.model.entity.Pollster;
 import com.mendes.repository.PollsterRepository;
 import org.springframework.stereotype.Service;
 
@@ -11,14 +11,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class PollsterService {
 
-    private PollsterRepository pollsterRepository;
+    private final PollsterRepository pollsterRepository;
 
     public PollsterService(PollsterRepository pollsterRepository) {
         this.pollsterRepository = pollsterRepository;
     }
 
-    public Pollster save(Pollster model) {
-        Pollster pollster = pollsterRepository.save(model);
-        return pollster;
+    public void save(Pollster model) {
+        pollsterRepository.save(model);
     }
 }

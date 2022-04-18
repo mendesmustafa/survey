@@ -1,4 +1,4 @@
-package com.mendes.model;
+package com.mendes.model.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -9,12 +9,12 @@ import java.time.LocalDate;
  */
 
 @Entity
-@Table(name = "FOOTBALLSURVEY")
-public class FootballSurvey implements Serializable {
+@Table(name = "LIFE_SURVEY")
+public class LifeSurvey implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "FOOTBALLSURVEY_ID_SEQ")
-    @SequenceGenerator(name = "FOOTBALLSURVEY_ID_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "LIFE_SURVEY_ID_SEQ")
+    @SequenceGenerator(name = "LIFE_SURVEY_ID_SEQ", allocationSize = 1)
     @Column(name = "ID")
     private Long id;
 
@@ -30,15 +30,22 @@ public class FootballSurvey implements Serializable {
     @Column(name = "DATE_OF_BIRTH")
     private LocalDate dateOfBirth;
 
-    @Column(name = "FAVORITE_FOOTBALL_TEAM")
-    private String favoriteFootballTeam;
+    @Column(name = "HAPPINESS_RATE")
+    private int happinessRate;
+
+    @Column(name = "HAPPY_THING")
+    private String happyThing;
+
+    @Column(name = "UNHAPPY_THING")
+    private String unhappyThing;
 
     @Column(name = "DESCRIPTION")
     private String description;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "pollster_id")
+    @JoinColumn(name = "POLLSTER_ID")
     private Pollster pollster;
+
 
     public Long getId() {
         return id;
@@ -80,12 +87,28 @@ public class FootballSurvey implements Serializable {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public String getFavoriteFootballTeam() {
-        return favoriteFootballTeam;
+    public int getHappinessRate() {
+        return happinessRate;
     }
 
-    public void setFavoriteFootballTeam(String favoriteFootballTeam) {
-        this.favoriteFootballTeam = favoriteFootballTeam;
+    public void setHappinessRate(int happinessRate) {
+        this.happinessRate = happinessRate;
+    }
+
+    public String getHappyThing() {
+        return happyThing;
+    }
+
+    public void setHappyThing(String happyThing) {
+        this.happyThing = happyThing;
+    }
+
+    public String getUnhappyThing() {
+        return unhappyThing;
+    }
+
+    public void setUnhappyThing(String unhappyThing) {
+        this.unhappyThing = unhappyThing;
     }
 
     public String getDescription() {

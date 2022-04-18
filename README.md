@@ -1,3 +1,3 @@
 # BİLGİLER
 
-Database için application.properties' den gerekli bilgileri düzenle.
+edit application.properties for connection database
